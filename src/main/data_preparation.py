@@ -10,8 +10,8 @@ def process_users():
     users_with_ages = all_users[all_users['Age'].notna()]
     users_no_ages = all_users[all_users['Age'].isna()]
     
-    users_with_ages.to_csv('users_with_age_data.csv', index=False)
-    users_no_ages.to_csv('users_without_age_data.csv', index=False)
+    users_with_ages.to_csv('../../datasets/users_with_age_data.csv', index=False)
+    users_no_ages.to_csv('../../datasets/users_without_age_data.csv', index=False)
     
     print(f"Users with ages: {len(users_with_ages)}, Users without ages: {len(users_no_ages)}")
     
@@ -23,8 +23,8 @@ def process_ratings(aged_users, missing_age_users):
     ratings_with_ages = all_ratings[all_ratings['User-ID'].isin(aged_users['User-ID'])]
     ratings_no_ages = all_ratings[all_ratings['User-ID'].isin(missing_age_users['User-ID'])]
     
-    ratings_with_ages.to_csv('ratings_with_age_data.csv', index=False)
-    ratings_no_ages.to_csv('ratings_without_age_data.csv', index=False)
+    ratings_with_ages.to_csv('../../datasets/ratings_with_age_data.csv', index=False)
+    ratings_no_ages.to_csv('../../datasets/ratings_without_age_data.csv', index=False)
     
     print(f"Ratings for users with ages: {len(ratings_with_ages)}, Ratings for users without ages: {len(ratings_no_ages)}")
     
@@ -51,7 +51,7 @@ def generate_libsvm_files(combined_data, user_indices, book_indices):
     age_values = combined_data.drop_duplicates('user_index').set_index('user_index')['Age']
     age_list = age_values.reindex(range(rating_matrix.shape[0]), fill_value=0).tolist()
     
-    dump_svmlight_file(rating_matrix, age_list, "user_book_ratings.libsvm", zero_based=True)
+    dump_svmlight_file(rating_matrix, age_list, "../../datasets/user_book_ratings.libsvm", zero_based=True)
     print("LIBSVM file: user_book_ratings.libsvm")
     
     idx_with_ages = [i for i, age in enumerate(age_list) if age > 0]
@@ -62,8 +62,8 @@ def generate_libsvm_files(combined_data, user_indices, book_indices):
     ages_with = [age_list[i] for i in idx_with_ages]
     ages_without = [age_list[i] for i in idx_no_ages]
     
-    dump_svmlight_file(matrix_with_ages, ages_with, "ratings_with_ages.libsvm", zero_based=True)
-    dump_svmlight_file(matrix_no_ages, ages_without, "ratings_no_ages.libsvm", zero_based=True)
+    dump_svmlight_file(matrix_with_ages, ages_with, "../../datasets/ratings_with_ages.libsvm", zero_based=True)
+    dump_svmlight_file(matrix_no_ages, ages_without, "../../datasets/ratings_no_ages.libsvm", zero_based=True)
     
     print("LIBSVM file with ages: ratings_with_ages.libsvm")
     print("LIBSVM file with missing ages: ratings_no_ages.libsvm")
